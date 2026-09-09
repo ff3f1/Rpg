@@ -1,0 +1,6 @@
+{
+  "name": "Aetheria RPG",
+  "description": "Эпическая экшон РПГ с открытым миром, боевой системой, магией, прокачкой, динамической погодой, NPC диалогами, крафтом, гильдиями, войной за территории, коопом и облачной синхронизацией.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
