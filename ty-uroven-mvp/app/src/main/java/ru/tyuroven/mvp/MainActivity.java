@@ -40,6 +40,12 @@ public class MainActivity extends Activity {
         });
         web.setWebViewClient(new WebViewClient());
         web.addJavascriptInterface(new Object() {
+            @JavascriptInterface public String getState() {
+                return getSharedPreferences("ty_uroven_data", MODE_PRIVATE).getString("state", null);
+            }
+            @JavascriptInterface public void setState(String value) {
+                getSharedPreferences("ty_uroven_data", MODE_PRIVATE).edit().putString("state", value).apply();
+            }
             @JavascriptInterface public void exportJson(String json) {
                 runOnUiThread(() -> {
                     Intent i=new Intent(Intent.ACTION_SEND);
