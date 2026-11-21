@@ -1,10 +1,10 @@
-name: ТЫ.УРОВЕНЬ · MVP Android APK
+name: TY.UROVEN · Android MVP APK
 on:
   push:
     branches: [ty-uroven-mvp-2026]
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   debug-apk:
     runs-on: ubuntu-latest
@@ -14,17 +14,30 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - uses: android-actions/setup-android@v3
-      - name: Install Android SDK 35
-        run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
+      - name: Install SDK 35 (runner already includes SDK tools)
+        run: |
+          echo "ANDROID_HOME=${ANDROID_HOME:-/usr/local/lib/android/sdk}" >> "$GITHUB_ENV"
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.10.2'
-      - name: Build test APK
-        run: gradle --no-daemon assembleDebug
+      - name: Build debug APK
         working-directory: ty-uroven-mvp
+        run: gradle --no-daemon assembleDebug
       - uses: actions/upload-artifact@v4
         with:
           name: ty-uroven-mvp-apk
           path: ty-uroven-mvp/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+      - name: Publish direct test APK download
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG=ty-uroven-mvp-0.1
+          APK=ty-uroven-mvp/app/build/outputs/apk/debug/app-debug.apk
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$APK#ty-uroven-mvp-v0.1-debug.apk" --clobber
+          else
+            gh release create "$TAG" "$APK#ty-uroven-mvp-v0.1-debug.apk" --target "${GITHUB_SHA}" --title "ТЫ.УРОВЕНЬ — MVP 0.1 (тестовый APK)" --notes "Ранний прототип игрового ежедневника. Без сервера, только локальные данные." --prerelease
+          fi
