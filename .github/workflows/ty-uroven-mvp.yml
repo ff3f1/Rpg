@@ -35,10 +35,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          TAG=ty-uroven-mvp-0.1
+          TAG=ty-uroven-mvp-0.2
           APK=ty-uroven-mvp/app/build/outputs/apk/debug/app-debug.apk
           if gh release view "$TAG" >/dev/null 2>&1; then
-            gh release upload "$TAG" "$APK#ty-uroven-mvp-v0.1-debug.apk" --clobber
+            gh release upload "$TAG" "$APK#ty-uroven-mvp-v0.2-debug.apk" --clobber
           else
-            gh release create "$TAG" "$APK#ty-uroven-mvp-v0.1-debug.apk" --target "${GITHUB_SHA}" --title "ТЫ.УРОВЕНЬ — MVP 0.1 (тестовый APK)" --notes "Ранний прототип игрового ежедневника. Без сервера, только локальные данные." --prerelease
+            gh release create "$TAG" "$APK#ty-uroven-mvp-v0.2-debug.apk" --target "${GITHUB_SHA}" --title "ТЫ.УРОВЕНЬ — Pixel Edition 0.2 (тестовый APK)" --notes "Обновлённая RPG-пиксельная графика. Реальные задачи, XP, магазин, привычки, дневник и финансы. Данные локально." --prerelease
           fi
